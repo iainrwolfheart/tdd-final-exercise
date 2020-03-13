@@ -3,19 +3,25 @@ import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class StockInformationTest {
 	
+	//Declare variables for use throughout test class
 	WebService service;
 	StockInformation stock;
 
 	@Before
 	public void setUp() throws Exception {
 		service = createMock(WebService.class);
-		
+		//Instantiated before each test
 	}
+	
+	//I definitely still have a lot to learn particularly on mocking. Real world practice will
+	//... help, I think, as I sometimes view some of these methods as testing hard-coded values
+	//... against OTHER hard-coded values, which throws me a little still. But I've definitely
+	//... improved my ability to think up what things need to be tested, as I wrote all 9 of these
+	//... test names and much of the test code before implementing the class and interface.
 
 	@Test
 	public void testPasswordValid() throws Exception {
@@ -24,7 +30,6 @@ public class StockInformationTest {
 		EasyMock.expect(service.getStockInfo("AA1")).andReturn("YY, Nationwide, 89, 4");
 		EasyMock.replay(service);
 		assertEquals(true, stock.service.authenticate(7, "P@ssw0rd")); 
-//		EasyMock.verify(service);
 	}
 	
 	@Test
@@ -40,18 +45,14 @@ public class StockInformationTest {
 	@Test 
 	public void testPasswordNotValidFieldsSet() throws Exception {
 		stock = new StockInformation(7, "password", "AA1", service);
-		EasyMock.expect(service.authenticate(7, "password")).andReturn(false).anyTimes();
 		EasyMock.expect(service.getStockInfo("AA1")).andReturn("Not Allowed");
-		EasyMock.replay(service);
 		assertEquals("Not Allowed", stock.getCompanyName());
 	}
 
 	@Test
 	public void testUserIDValid() throws Exception {
 		stock = new StockInformation(7, "P@ssw0rd", "AA1", service);
-		EasyMock.expect(service.authenticate(7, "P@ssw0rd")).andReturn(true).anyTimes();
 		EasyMock.expect(service.getStockInfo("AA1")).andReturn("YY, Nationwide, 89, 4");
-		EasyMock.replay(service);
 		assertEquals(true, stock.isValidUserID());
 	}
 
@@ -59,7 +60,6 @@ public class StockInformationTest {
 	public void testUserIDNotValidMessageAppears() throws Exception {
 		stock = new StockInformation(0, "P@ssw0rd", "AA1", service);
 		EasyMock.expect(service.authenticate(0, "P@ssw0rd")).andReturn(false).anyTimes();
-//		EasyMock.expect(service.getStockInfo("AA1")).andReturn("Not Allowed");
 		EasyMock.replay(service);
 		assertEquals(false, stock.isValidUserID());
 	}
@@ -97,7 +97,7 @@ public class StockInformationTest {
 		stock = new StockInformation(7, "P@ssw0rd", "AA1", service);
 		EasyMock.expect(service.authenticate(7, "P@ssw0rd")).andReturn(true).anyTimes();
 		EasyMock.expect(service.getStockInfo("AA1")).andReturn("AA1, Nationwide, 89, 4");
-		assertEquals("Nationwide, AA1, 89", stock.toString());
+		assertEquals("Nationwide, [AA1], 89", stock.toString());
 	}
 
 }
